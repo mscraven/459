@@ -19,7 +19,6 @@ source:
       type: integer
 
   constants:
-    file_destination: "public://images/"
     file_source: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2"
 
   item_selector: results
