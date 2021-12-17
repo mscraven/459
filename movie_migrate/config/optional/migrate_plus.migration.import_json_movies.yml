@@ -1,0 +1,75 @@
+# Migration configuration for importing movies.
+id: import_json_movies
+label: Import movies from The Movie Database
+migration_group: JSON Import
+dependencies:
+  enforced:
+    module:
+      - movie_migrate
+
+source:
+  plugin: url
+  data_fetcher_plugin: http
+  data_parser_plugin: json
+
+  urls: https://api.themoviedb.org/3/movie/top_rated?api_key=5581b6b37ce95b318981c42c1f7b13a1
+
+  ids:
+    id:
+      type: integer
+
+  constants:
+    file_destination: "public://images/"
+    file_source: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2"
+
+  item_selector: results
+
+  fields:
+    - name: id
+      label: "Id"
+      selector: id
+    - name: field_overview
+      label: "Overview"
+      selector: overview
+    - name: field_release_date
+      label: "Release date"
+      selector: release_date
+    - name: title
+      label: "Title"
+      selector: title
+    - name: field_poster_path
+      label: "Poster Path"
+      selector: poster_path
+    - name: field_poster_image
+      label: "Poster Image"
+      selector: poster_path
+
+process:
+  title: title
+  field_overview:
+    plugin: default_value
+    source: field_overview
+    default_value: "movie overview"
+  field_release_date:
+    plugin: format_date
+    from_format: "Y-m-d"
+    to_format: "Y-m-d"
+    source: field_release_date
+  field_poster_path:
+    plugin: default_value
+    source: field_poster_path
+    default_value: "hey"
+  field_poster_image:
+    - plugin: concat
+      source:
+        - constants/file_source
+        - field_poster_path
+    - plugin: image_import
+      source: file
+      destination: "constants/file_destination"
+      title: title
+      alt: title
+
+destination:
+  plugin: "entity:node"
+  default_bundle: movie
