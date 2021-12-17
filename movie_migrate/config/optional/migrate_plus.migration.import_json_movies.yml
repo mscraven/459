@@ -40,9 +40,6 @@ source:
     - name: field_poster_path
       label: "Poster Path"
       selector: poster_path
-    - name: field_poster_image
-      label: "Poster Image"
-      selector: poster_path
 
 process:
   title: title
@@ -59,16 +56,6 @@ process:
     plugin: default_value
     source: field_poster_path
     default_value: "hey"
-  field_poster_image:
-    - plugin: concat
-      source:
-        - constants/file_source
-        - field_poster_path
-    - plugin: image_import
-      source: file
-      destination: "constants/file_destination"
-      title: title
-      alt: title
 
 destination:
   plugin: "entity:node"
